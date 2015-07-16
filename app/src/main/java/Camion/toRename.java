@@ -5,5 +5,5 @@ package Camion;
  */
 public class toRename {
 
-    int toto;
+    int tata;
 }
