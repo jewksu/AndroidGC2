@@ -1,7 +1,7 @@
-package Camion;
+package Simulateur;
 
 /**
  * Created by kevin on 16/07/2015.
  */
-public class todel {
+public class toRename {
 }
