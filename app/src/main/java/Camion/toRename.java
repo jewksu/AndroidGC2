@@ -5,4 +5,5 @@ package Camion;
  */
 public class toRename {
  float toto;
+    int SalutCMoi;
 }
