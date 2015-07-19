@@ -3,6 +3,9 @@
 *.bak
 *.log
 *.class
+/.DS_Store
 /.gradle
+/.idea/workspace.xml
 /app/build
 /build
+/local.properties
