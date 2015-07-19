@@ -1,0 +1,8 @@
+*.swp
+*.tmp
+*.bak
+*.log
+*.class
+/.gradle
+/app/build
+/build
