@@ -87,10 +87,13 @@ public class ControllerCommunication {
             response = sxb.build(new StringReader(xmlRequest.toString()));
         } catch (UnknownHostException e) {
             Log.e(TAG, "Unknown host", e);
+            endCommunication();
         } catch (IOException e) {
             Log.e(TAG, "Error during connection to server", e);
+            endCommunication();
         } catch (JDOMException e) {
             Log.e(TAG, "Invalid XML", e);
+            endCommunication();
         }
 
         return response;
