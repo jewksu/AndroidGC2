@@ -1,6 +1,9 @@
 package jewksu.androidgc2;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,8 +36,8 @@ public class TestActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        controllerComm = new ControllerCommunication("10.0.2.2", 10000); // virtual android device see host at 10.0.2.2
-        updateSupervisionState();
+        // create default values if first execution of application
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
     @Override
@@ -42,6 +45,28 @@ public class TestActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_test, menu);
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // get controller host and port from settings
+        /* no need to provide default values, we have ensured in onCreate that preferences
+         * have been created with default values if needed */
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String server_host = sharedPref.getString("server_host", "");
+        int server_port = Integer.valueOf(sharedPref.getString("server_port", "0"));
+
+        controllerComm = new ControllerCommunication(server_host, server_port);
+
+        updateSupervisionState();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // endCommunication, in background task as well
     }
 
     @Override
@@ -54,6 +79,8 @@ public class TestActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         switch(id) {
             case R.id.action_settings:
+                // start settings activity
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
 
             case R.id.action_refresh:
@@ -67,10 +94,5 @@ public class TestActivity extends ActionBarActivity {
     // request new supervision state from controller and update screen with new data
     protected void updateSupervisionState() {
         new BackgroundCommunication().execute(controllerComm);
-/*
-        String dateState = controllerComm.getSupervisionState();
-        TextView tv = (TextView)findViewById(R.id.test_text);
-        tv.setText(dateState);
-*/
     }
 }

@@ -1,0 +1,9 @@
+<resources>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="pref_title_server_host">Controller Host</string>
+    <string name="pref_default_server_host">10.0.2.2</string> <!--virtual android device see host at 10.0.2.2-->
+    <string name="pref_title_server_port">Controller Port</string>
+    <string name="pref_default_server_port">10000</string>
+
+</resources>

@@ -5,6 +5,7 @@
 *.class
 /.DS_Store
 /.gradle
+/.idea/libraries
 /.idea/workspace.xml
 /app/build
 /build
