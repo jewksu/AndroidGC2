@@ -4,17 +4,11 @@ import android.util.Log;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
+import core.XMLSocket;
 
 /** @file
  * Manage communication with Controller
@@ -25,12 +19,12 @@ public class ControllerCommunication {
 
     String server_host;
     int server_port;
-    Socket socket;
+    XMLSocket xmlsocket;
 
     public ControllerCommunication(String server_host, int server_port) {
         this.server_host = server_host;
         this.server_port = server_port;
-        socket = null;
+        xmlsocket = null;
     }
 
     public String getSupervisionState() {
@@ -59,54 +53,26 @@ public class ControllerCommunication {
         return dateState;
     }
 
+    // Send request and get associated response
     private Document doCommunication(Document request) {
-        SAXBuilder sxb = new SAXBuilder();
-        Document response = null;
-
-        try {
-            if (socket == null) {
-                Log.i(TAG, "Connecting to " + server_host + ":" + server_port);
+        if (xmlsocket == null || xmlsocket.isClosed()) {
+            Log.i(TAG, "Connecting to " + server_host + ":" + server_port);
+            Socket socket = null;
+            try {
                 socket = new Socket(server_host, server_port);
+            } catch (IOException e) {
+                Log.e(TAG, "Error during connection to server", e);
+                return null;
             }
-
-            // send request
-            XMLOutputter xmlOutput = new XMLOutputter(Format.getCompactFormat());
-            xmlOutput.output(request, socket.getOutputStream());
-            socket.getOutputStream().write('\n'); // empty line to indicate end of request
-
-            // get server response (buffer lines until an empty line is found)
-            BufferedReader buffRead = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            StringBuilder xmlRequest = new StringBuilder();
-            while (true)
-            {
-                String line = buffRead.readLine();
-                if (line == null || line.isEmpty())
-                    break;
-                xmlRequest.append(line);
-            }
-            response = sxb.build(new StringReader(xmlRequest.toString()));
-        } catch (UnknownHostException e) {
-            Log.e(TAG, "Unknown host", e);
-            endCommunication();
-        } catch (IOException e) {
-            Log.e(TAG, "Error during connection to server", e);
-            endCommunication();
-        } catch (JDOMException e) {
-            Log.e(TAG, "Invalid XML", e);
-            endCommunication();
+            xmlsocket = new XMLSocket(socket);
         }
 
-        return response;
+        xmlsocket.write(request);
+        return xmlsocket.read();
     }
 
     public void endCommunication() {
-        if (socket != null) {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Error while closing socket", e);
-            }
-            socket = null;
-        }
+        xmlsocket.close();
+        xmlsocket = null;
     }
 }
