@@ -2,32 +2,22 @@ package jewksu.androidgc2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
 
-public class TestActivity extends ActionBarActivity {
+import core.ControllerCommunication;
 
-    // inner class to manage socket in a dedicated thread
-    public class BackgroundCommunication extends AsyncTask<ControllerCommunication, Void, String> {
-        @Override
-        protected String doInBackground(ControllerCommunication... params) {
-            return params[0].getSupervisionState();
-        }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            TextView tv = (TextView)findViewById(R.id.test_text);
-            tv.setText(s);
-        }
-
-    }
+public class TestActivity extends ActionBarActivity implements ControllerCommunication.ResponseListener {
+    private static final String TAG = "TestActivity";
 
     ControllerCommunication controllerComm;
 
@@ -58,7 +48,7 @@ public class TestActivity extends ActionBarActivity {
         String server_host = sharedPref.getString("server_host", "");
         int server_port = Integer.valueOf(sharedPref.getString("server_port", "0"));
 
-        controllerComm = new ControllerCommunication(server_host, server_port);
+        controllerComm = new ControllerCommunication(server_host, server_port, this);
 
         updateSupervisionState();
     }
@@ -66,7 +56,7 @@ public class TestActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // endCommunication, in background task as well
+        controllerComm.close();
     }
 
     @Override
@@ -93,6 +83,26 @@ public class TestActivity extends ActionBarActivity {
 
     // request new supervision state from controller and update screen with new data
     protected void updateSupervisionState() {
-        new BackgroundCommunication().execute(controllerComm);
+        controllerComm.simpleRequest("REQ_SUPERVISION_STATE");
+    }
+
+    @Override
+    public void onControllerResponse(Document response) {
+        // check response type
+        if (response != null) {
+            Element rootResp = response.getRootElement();
+            String responseType = rootResp.getChild("response_type").getTextNormalize().toUpperCase();
+            Log.i(TAG, "Server response: " + responseType);
+            switch (responseType) {
+                case "RESP_SUPERVISION_STATE":
+                    // get supervision data
+                    Element supervisionState = rootResp.getChild("supervision_state");
+                    String dateState = supervisionState.getChild("date_state").getTextNormalize();
+                    // update TextView
+                    TextView tv = (TextView) findViewById(R.id.test_text);
+                    tv.setText(dateState);
+                    break;
+            }
+        }
     }
 }
