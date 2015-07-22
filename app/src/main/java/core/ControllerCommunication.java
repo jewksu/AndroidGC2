@@ -84,8 +84,10 @@ public class ControllerCommunication {
     // Close underlying socket
     public void close() {
         stopBgTask();
-        xmlsocket.close(); // seems that close can be done in main thread
-        xmlsocket = null;
+        if (xmlsocket != null) {
+            xmlsocket.close(); // seems that close can be done in main thread
+            xmlsocket = null;
+        }
     }
 
     // Send a simple request (type, no data) to Controller

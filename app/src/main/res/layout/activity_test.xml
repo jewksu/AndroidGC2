@@ -3,10 +3,51 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".TestActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".TestActivity"
+    android:background="#c73a3a3a">
 
     <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/test_text" />
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/poubelle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="315dp"
+        android:layout_marginStart="315dp" />
+
+    <ProgressBar
+        android:id="@+id/vertical_progressbar"
+        android:layout_width="195dp"
+        android:layout_height="370dp"
+        style="@style/Widget.ProgressBar.Vertical"
+        android:progress="20"
+        android:layout_marginBottom="57dp"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_toRightOf="@+id/test_text"
+        android:layout_toEndOf="@+id/test_text" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:layout_toStartOf="@+id/vertical_progressbar"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>
