@@ -24,7 +24,7 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.container_sim);
 
         // create default values if first execution of application
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
