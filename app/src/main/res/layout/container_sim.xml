@@ -11,8 +11,8 @@
         android:id="@+id/test_text" />
 
     <ImageView
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="400dp"
         android:id="@+id/imageView"
         android:src="@drawable/poubelle"
         android:layout_alignParentTop="true"
@@ -31,14 +31,16 @@
 
     <ProgressBar
         android:id="@+id/vertical_progressbar"
-        android:layout_width="195dp"
-        android:layout_height="370dp"
+        android:layout_width="110dp"
+        android:layout_height="210dp"
         style="@style/Widget.ProgressBar.Vertical"
         android:progress="20"
-        android:layout_marginBottom="57dp"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_toRightOf="@+id/test_text"
-        android:layout_toEndOf="@+id/test_text" />
+        android:layout_marginLeft="44dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginBottom="11dp"
+        android:layout_above="@+id/seekBar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <SeekBar
         android:layout_width="wrap_content"
