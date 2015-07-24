@@ -100,10 +100,11 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                     Element supervisionState = rootResp.getChild("supervision_state");
                     String containerVal = supervisionState.getChild("date_state").getTextNormalize();
                     // update TextView
-                    TextView tv = (TextView) findViewById(R.id.test_text);
+                    //TextView tv = (TextView) findViewById(R.id.test_text);
+                    //tv.setText(containerVal);
+                    // update ProgressBar
                     ProgressBar tauxContainer = (ProgressBar) findViewById(R.id.vertical_progressbar);
                     tauxContainer.setProgress(Integer.parseInt(containerVal));
-                    tv.setText(containerVal);
                     break;
             }
         }
