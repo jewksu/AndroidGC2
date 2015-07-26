@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -98,15 +100,25 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                 case "RESP_SUPERVISION_STATE":
                     // get supervision data
                     Element supervisionState = rootResp.getChild("supervision_state");
-                    String containerVal = supervisionState.getChild("date_state").getTextNormalize();
+                    int containerVal = Integer.parseInt(supervisionState.getChild("date_state").getValue());
                     // update TextView
-                    //TextView tv = (TextView) findViewById(R.id.test_text);
-                    //tv.setText(containerVal);
+                    TextView tv = (TextView) findViewById(R.id.test_text);
+                    tv.setText(containerVal+"%");
                     // update ProgressBar
                     ProgressBar tauxContainer = (ProgressBar) findViewById(R.id.vertical_progressbar);
-                    tauxContainer.setProgress(Integer.parseInt(containerVal));
+                    tauxContainer.setProgress(containerVal);
                     break;
             }
         }
+    }
+
+    public void buttonOnClick(View v){
+        Button button = (Button)v;
+        switch(button.getText().toString()) {
+            case "GET":
+                updateSupervisionState();
+                break;
+        }
+
     }
 }
