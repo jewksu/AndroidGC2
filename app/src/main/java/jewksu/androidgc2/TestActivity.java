@@ -22,7 +22,7 @@ import core.ControllerCommunication;
 public class TestActivity extends ActionBarActivity implements ControllerCommunication.ResponseListener {
     private static final String TAG = "TestActivity";
 
-    ControllerCommunication controllerComm;
+    private ControllerCommunication controllerComm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
