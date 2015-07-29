@@ -2,6 +2,7 @@ package jewksu.androidgc2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -16,9 +17,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
+
+import java.util.List;
 
 import core.ControllerCommunication;
 
@@ -88,6 +92,10 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
             case R.id.action_supervision:
                 updateSupervisionState();
                 return true;
+
+            case R.id.action_circuits:
+                updateCircuits();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -96,6 +104,11 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
     // request new supervision state from controller and update screen with new data
     protected void updateSupervisionState() {
         controllerComm.simpleRequest("REQ_SUPERVISION_STATE");
+    }
+
+    // request new supervision state from controller and update screen with new data
+    protected void updateCircuits() {
+        controllerComm.simpleRequest("REQ_CIRCUITS");
     }
 
     @Override
@@ -120,6 +133,58 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                         );
                     }
                     break;
+
+                case "RESP_CIRCUITS":
+                    mMap.clear(); // remove all markers, polylines, polygons, overlays, etc from the map.
+
+                    Element circuits = rootResp.getChild("circuits");
+                    // put in green container sets that are not collected
+                    for (Element containerSet: circuits.getChild("not_collected").getChild("container_sets").getChildren("container_set")) {
+                        mMap.addMarker(new MarkerOptions()
+                                        .position(getLocation(containerSet.getChild("location")))
+                                        .draggable(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        );
+                    }
+
+                    // for each circuit, use a different color for markers + polyline
+                    // to show the circuit depot -> container sets in order -> depot
+                    List<Element> eltCircuits = circuits.getChildren("circuit");
+                    float colorHue = 180;
+                    float colorHue_step = eltCircuits.size() > 1 ? (float)((180+60)*1. / (eltCircuits.size()-1)) : 0;
+                    for (Element circuit: eltCircuits) {
+                        LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
+
+                        // use polyline to display circuit order
+                        PolylineOptions polylineOpt = new PolylineOptions()
+                                .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
+
+                        // start from depot
+                        polylineOpt.add(depotLocation);
+
+                        for (Element containerSet: circuit.getChild("container_sets").getChildren("container_set")) {
+                            // add marker and update polyline for each container set
+                            LatLng location = getLocation(containerSet.getChild("location"));
+                            mMap.addMarker(new MarkerOptions()
+                                            .position(location)
+                                            .draggable(false)
+                                            .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
+                            );
+                            polylineOpt.add(location);
+                        }
+
+                        // end at depot
+                        polylineOpt.add(depotLocation);
+
+                        mMap.addPolyline(polylineOpt);
+
+                        // determine color for next circuit
+                        colorHue += colorHue_step;
+                        if (colorHue >= 360)
+                            colorHue -= 360; // color roll-over
+                    }
+                    break;
+
             }
         }
     }
