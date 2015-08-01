@@ -150,38 +150,69 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                     // for each circuit, use a different color for markers + polyline
                     // to show the circuit depot -> container sets in order -> depot
                     List<Element> eltCircuits = circuits.getChildren("circuit");
-                    float colorHue = 180;
-                    float colorHue_step = eltCircuits.size() > 1 ? (float)((180+60)*1. / (eltCircuits.size()-1)) : 0;
-                    for (Element circuit: eltCircuits) {
-                        LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
-
-                        // use polyline to display circuit order
-                        PolylineOptions polylineOpt = new PolylineOptions()
-                                .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
-
-                        // start from depot
-                        polylineOpt.add(depotLocation);
-
-                        for (Element containerSet: circuit.getChild("container_sets").getChildren("container_set")) {
-                            // add marker and update polyline for each container set
-                            LatLng location = getLocation(containerSet.getChild("location"));
-                            mMap.addMarker(new MarkerOptions()
-                                            .position(location)
-                                            .draggable(false)
-                                            .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
-                            );
-                            polylineOpt.add(location);
+                    for (int dechet_id = 3; dechet_id > 0; dechet_id--) { // on traite a l'envers, plus esthetique d'afficher la collecte de verre en premier (donc en fond)
+                        int nb_circuits_dechet = 0;
+                        for (Element circuit : eltCircuits) {
+                            if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id)
+                                nb_circuits_dechet++;
                         }
 
-                        // end at depot
-                        polylineOpt.add(depotLocation);
+                        float colorHue;
+                        float colorHueEnd;
+                        switch (dechet_id) {
+                            case 1: // tout venant: nuances de bleu
+                                colorHue = 190;
+                                colorHueEnd = 260;
+                                break;
+                            case 2: // recyclage: nuances de vert
+                                colorHue = 80;
+                                colorHueEnd = 150;
+                                break;
+                            case 3: // verre: jaune
+                                colorHue = 60;
+                                colorHueEnd = 60;
+                                break;
+                            default: // rouge
+                                colorHue = 0;
+                                colorHueEnd = 0;
+                                break;
+                        }
+                        float colorHue_step = nb_circuits_dechet > 1 ? (colorHueEnd - colorHue) / (nb_circuits_dechet - 1) : 0;
 
-                        mMap.addPolyline(polylineOpt);
+                        for (Element circuit : eltCircuits) {
+                            if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id) {
 
-                        // determine color for next circuit
-                        colorHue += colorHue_step;
-                        if (colorHue >= 360)
-                            colorHue -= 360; // color roll-over
+                                LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
+
+                                // use polyline to display circuit order
+                                PolylineOptions polylineOpt = new PolylineOptions()
+                                        .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
+
+                                // start from depot
+                                polylineOpt.add(depotLocation);
+
+                                for (Element containerSet : circuit.getChild("container_sets").getChildren("container_set")) {
+                                    // add marker and update polyline for each container set
+                                    LatLng location = getLocation(containerSet.getChild("location"));
+                                    mMap.addMarker(new MarkerOptions()
+                                                    .position(location)
+                                                    .draggable(false)
+                                                    .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
+                                    );
+                                    polylineOpt.add(location);
+                                }
+
+                                // end at depot
+                                polylineOpt.add(depotLocation);
+
+                                mMap.addPolyline(polylineOpt);
+
+                                // determine color for next circuit
+                                colorHue += colorHue_step;
+                                if (colorHue >= 360)
+                                    colorHue -= 360; // color roll-over
+                            }
+                        }
                     }
                     break;
 
