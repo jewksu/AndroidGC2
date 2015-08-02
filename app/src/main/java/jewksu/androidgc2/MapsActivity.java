@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -89,6 +90,10 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
 
+            case R.id.action_trigcircuitscalc:
+                trigCircuitsCalc();
+                return true;
+
             case R.id.action_supervision:
                 updateSupervisionState();
                 return true;
@@ -99,6 +104,11 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // request calculator to compute circuits
+    protected void trigCircuitsCalc() {
+        controllerComm.simpleRequest("TRIG_CIRCUIT_COMPUTATION");
     }
 
     // request new supervision state from controller and update screen with new data
@@ -216,6 +226,11 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                     }
                     break;
 
+                case "OK":
+                case "ERROR":
+                default:
+                    Toast.makeText(getApplicationContext(), "Réponse contrôleur: "+responseType, Toast.LENGTH_LONG).show();
+                    break;
             }
         }
     }

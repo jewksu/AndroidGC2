@@ -4,10 +4,13 @@
     <item android:id="@+id/action_settings" android:icon="@drawable/ic_action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_trigcircuitscalc" android:icon="@drawable/ic_action_time"
+        android:title="@string/action_trigcircuitscalc"
+        android:orderInCategory="050" app:showAsAction="always" />
     <item android:id="@+id/action_supervision" android:icon="@drawable/ic_action_dock"
         android:title="@string/action_supervision"
-        android:orderInCategory="100" app:showAsAction="ifRoom" />
+        android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/action_circuits" android:icon="@drawable/ic_action_share"
         android:title="@string/action_circuits"
-        android:orderInCategory="200" app:showAsAction="ifRoom" />
+        android:orderInCategory="200" app:showAsAction="always" />
 </menu>
