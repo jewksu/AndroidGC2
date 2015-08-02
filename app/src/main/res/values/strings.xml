@@ -8,4 +8,7 @@
     <string name="action_trigcircuitscalc">Calcul circuits</string>
     <string name="action_supervision">Supervision</string>
     <string name="action_circuits">Circuits</string>
+    <string name="action_dechet1">Déchet tout-venant</string>
+    <string name="action_dechet2">Déchet recyclable</string>
+    <string name="action_dechet3">Déchet verre</string>
 </resources>

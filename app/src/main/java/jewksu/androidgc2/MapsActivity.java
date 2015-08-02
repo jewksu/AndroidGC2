@@ -33,6 +33,9 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
     private ControllerCommunication controllerComm;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
+    private Document lastCircuits;
+    private MenuItem[] dechetMenuItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,12 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_maps, menu);
+
+        // keep reference on menu items
+        dechetMenuItems = new MenuItem[3];
+        dechetMenuItems[0] = menu.findItem(R.id.action_dechet1);
+        dechetMenuItems[1] = menu.findItem(R.id.action_dechet2);
+        dechetMenuItems[2] = menu.findItem(R.id.action_dechet3);
         return true;
     }
 
@@ -101,6 +110,15 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
             case R.id.action_circuits:
                 updateCircuits();
                 return true;
+
+            case R.id.action_dechet1:
+            case R.id.action_dechet2:
+            case R.id.action_dechet3:
+                // toggle menu item
+                item.setChecked(!item.isChecked());
+                // refresh screen
+                onControllerResponse(lastCircuits);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -145,9 +163,12 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                     break;
 
                 case "RESP_CIRCUITS":
+                    lastCircuits = response; // keep latest circuit response to refresh screen when toggling dechet
+
                     mMap.clear(); // remove all markers, polylines, polygons, overlays, etc from the map.
 
                     Element circuits = rootResp.getChild("circuits");
+                    /* not available anymore
                     // put in green container sets that are not collected
                     for (Element containerSet: circuits.getChild("not_collected").getChild("container_sets").getChildren("container_set")) {
                         mMap.addMarker(new MarkerOptions()
@@ -155,72 +176,74 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                                         .draggable(false)
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                         );
-                    }
+                    }*/
 
                     // for each circuit, use a different color for markers + polyline
                     // to show the circuit depot -> container sets in order -> depot
                     List<Element> eltCircuits = circuits.getChildren("circuit");
                     for (int dechet_id = 3; dechet_id > 0; dechet_id--) { // on traite a l'envers, plus esthetique d'afficher la collecte de verre en premier (donc en fond)
-                        int nb_circuits_dechet = 0;
-                        for (Element circuit : eltCircuits) {
-                            if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id)
-                                nb_circuits_dechet++;
-                        }
+                        if (dechetMenuItems[dechet_id-1].isChecked()) {
+                            int nb_circuits_dechet = 0;
+                            for (Element circuit : eltCircuits) {
+                                if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id)
+                                    nb_circuits_dechet++;
+                            }
 
-                        float colorHue;
-                        float colorHueEnd;
-                        switch (dechet_id) {
-                            case 1: // tout venant: nuances de bleu
-                                colorHue = 190;
-                                colorHueEnd = 260;
-                                break;
-                            case 2: // recyclage: nuances de vert
-                                colorHue = 80;
-                                colorHueEnd = 150;
-                                break;
-                            case 3: // verre: jaune
-                                colorHue = 60;
-                                colorHueEnd = 60;
-                                break;
-                            default: // rouge
-                                colorHue = 0;
-                                colorHueEnd = 0;
-                                break;
-                        }
-                        float colorHue_step = nb_circuits_dechet > 1 ? (colorHueEnd - colorHue) / (nb_circuits_dechet - 1) : 0;
+                            float colorHue;
+                            float colorHueEnd;
+                            switch (dechet_id) {
+                                case 1: // tout venant: nuances de bleu
+                                    colorHue = 190;
+                                    colorHueEnd = 260;
+                                    break;
+                                case 2: // recyclage: nuances de vert
+                                    colorHue = 80;
+                                    colorHueEnd = 150;
+                                    break;
+                                case 3: // verre: jaune
+                                    colorHue = 60;
+                                    colorHueEnd = 60;
+                                    break;
+                                default: // rouge
+                                    colorHue = 0;
+                                    colorHueEnd = 0;
+                                    break;
+                            }
+                            float colorHue_step = nb_circuits_dechet > 1 ? (colorHueEnd - colorHue) / (nb_circuits_dechet - 1) : 0;
 
-                        for (Element circuit : eltCircuits) {
-                            if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id) {
+                            for (Element circuit : eltCircuits) {
+                                if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id) {
 
-                                LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
+                                    LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
 
-                                // use polyline to display circuit order
-                                PolylineOptions polylineOpt = new PolylineOptions()
-                                        .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
+                                    // use polyline to display circuit order
+                                    PolylineOptions polylineOpt = new PolylineOptions()
+                                            .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
 
-                                // start from depot
-                                polylineOpt.add(depotLocation);
+                                    // start from depot
+                                    polylineOpt.add(depotLocation);
 
-                                for (Element containerSet : circuit.getChild("container_sets").getChildren("container_set")) {
-                                    // add marker and update polyline for each container set
-                                    LatLng location = getLocation(containerSet.getChild("location"));
-                                    mMap.addMarker(new MarkerOptions()
-                                                    .position(location)
-                                                    .draggable(false)
-                                                    .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
-                                    );
-                                    polylineOpt.add(location);
+                                    for (Element containerSet : circuit.getChild("container_sets").getChildren("container_set")) {
+                                        // add marker and update polyline for each container set
+                                        LatLng location = getLocation(containerSet.getChild("location"));
+                                        mMap.addMarker(new MarkerOptions()
+                                                        .position(location)
+                                                        .draggable(false)
+                                                        .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
+                                        );
+                                        polylineOpt.add(location);
+                                    }
+
+                                    // end at depot
+                                    polylineOpt.add(depotLocation);
+
+                                    mMap.addPolyline(polylineOpt);
+
+                                    // determine color for next circuit
+                                    colorHue += colorHue_step;
+                                    if (colorHue >= 360)
+                                        colorHue -= 360; // color roll-over
                                 }
-
-                                // end at depot
-                                polylineOpt.add(depotLocation);
-
-                                mMap.addPolyline(polylineOpt);
-
-                                // determine color for next circuit
-                                colorHue += colorHue_step;
-                                if (colorHue >= 360)
-                                    colorHue -= 360; // color roll-over
                             }
                         }
                     }
