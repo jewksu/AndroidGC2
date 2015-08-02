@@ -216,6 +216,11 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
 
                                     LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
 
+                                    // marker depot
+                                    mMap.addMarker(new MarkerOptions()
+                                                    .position(depotLocation)
+                                                    .draggable(false));
+
                                     // use polyline to display circuit order
                                     PolylineOptions polylineOpt = new PolylineOptions()
                                             .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));

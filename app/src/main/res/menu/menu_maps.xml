@@ -15,11 +15,11 @@
         android:orderInCategory="200" app:showAsAction="always" />
     <item android:id="@+id/action_dechet1" android:icon="@drawable/ic_action_discard"
         android:title="@string/action_dechet1" android:checkable="true" android:checked="true"
-        android:orderInCategory="501" app:showAsAction="ifRoom" />
+        android:orderInCategory="501" app:showAsAction="never" />
     <item android:id="@+id/action_dechet2" android:icon="@drawable/ic_action_discard"
         android:title="@string/action_dechet2" android:checkable="true" android:checked="true"
-        android:orderInCategory="502" app:showAsAction="ifRoom" />
+        android:orderInCategory="502" app:showAsAction="never" />
     <item android:id="@+id/action_dechet3" android:icon="@drawable/ic_action_discard"
         android:title="@string/action_dechet3" android:checkable="true" android:checked="true"
-        android:orderInCategory="503" app:showAsAction="ifRoom" />
+        android:orderInCategory="503" app:showAsAction="never" />
 </menu>
