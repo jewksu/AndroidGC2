@@ -94,11 +94,12 @@
             android:singleLine="true" />
 
         <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="Retour Liste"
-            android:id="@+id/button" />
+            android:text="Retour"
+            android:id="@+id/button"
+            android:onClick="buttonOnClick"
+            android:singleLine="true" />
 
 
     </LinearLayout>

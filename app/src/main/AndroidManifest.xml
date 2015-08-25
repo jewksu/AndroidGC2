@@ -29,6 +29,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="jewksu.androidgc2.TestActivity" />
+            android:label="@string/title_activity_maps" >
         </activity>
 
         <meta-data
@@ -41,11 +42,25 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
+
+        <!--    <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter> -->
+
+        </activity>
+        <activity
+            android:name=".portail_simulation"
+            android:label="@string/title_activity_portail_simulation" >
+              <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".conteneurs_liste"
+            android:label="@string/title_activity_conteneurs_liste" >
         </activity>
     </application>
 
