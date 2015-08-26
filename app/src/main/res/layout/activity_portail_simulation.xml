@@ -62,16 +62,17 @@
         android:layout_width="250dp" android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:id="@+id/containerIDtxt"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:background="#ffffffff"
         android:layout_marginTop="15dp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:hint="Saisir l'ID du conteneur"/>
 
     <Button
         android:layout_width="250dp" android:layout_gravity="center_horizontal"
         android:layout_height="60dp"
         android:text="Conteneur unitaire"
-        android:id="@+id/button3"
+        android:id="@+id/goContainer"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:onClick="buttonPortailOnClick"

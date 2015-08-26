@@ -132,7 +132,7 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                 case "RESP_SUPERVISION_STATE":
                     // get supervision data
                     Element supervisionState = rootResp.getChild("supervision_state");
-                    int containerVal = Integer.parseInt(supervisionState.getChild("date_state").getValue());
+                   // int containerVal = Integer.parseInt(supervisionState.getChild("date_state").getValue());
 
                     Element Ilots = supervisionState.getChild("container_sets");
                     List<Content> IlotsContent = Ilots.getContent();
@@ -157,12 +157,15 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
 
 
 
-                    // update TextView
-                    TextView tv = (TextView) findViewById(R.id.test_text);
-                    tv.setText(containerVal+"%");
+
                     // update ProgressBar
                     ProgressBar tauxContainer = (ProgressBar) findViewById(R.id.vertical_progressbar);
-                    tauxContainer.setProgress(containerVal);
+                    int tauxContainerSelected = containers.get(Integer.parseInt(containerID)).FillRatio;
+                    tauxContainer.setProgress(tauxContainerSelected);
+
+                    // update TextView
+                    TextView tv = (TextView) findViewById(R.id.test_text);
+                    tv.setText(tauxContainerSelected+"%");
                     break;
             }
         }

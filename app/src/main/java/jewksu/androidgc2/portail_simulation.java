@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,24 +22,36 @@ import org.jdom2.Element;
 import core.ControllerCommunication;
 
 
-public class portail_simulation extends ActionBarActivity implements ControllerCommunication.ResponseListener {
+public class portail_simulation extends ActionBarActivity  {
 
     private static final String TAG = "Portail_Simulation";
     final String CONTAINER_ID = "ContainerID";
-    ControllerCommunication controllerComm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portail_simulation);
+        final Button UnitaryContainer = (Button)findViewById(R.id.goContainer);
+        UnitaryContainer.setEnabled(false);
+        final EditText editIdTxt = (EditText)findViewById(R.id.containerIDtxt);
+        editIdTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
 
-        // get controller host and port from settings
-        /* no need to provide default values, we have ensured in onCreate that preferences
-         * have been created with default values if needed */
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String server_host = sharedPref.getString("server_host", "");
-        int server_port = Integer.valueOf(sharedPref.getString("server_port", "0"));
-        controllerComm = new ControllerCommunication(server_host, server_port, this);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editIdTxt.getText().toString() != null && !editIdTxt.getText().toString().isEmpty()) {
+                    UnitaryContainer.setEnabled(true);
+                }
+                else
+                {
+                    UnitaryContainer.setEnabled(false);
+                }
+            }
+        });
     }
 
 
@@ -77,28 +91,5 @@ public class portail_simulation extends ActionBarActivity implements ControllerC
                 startActivity(intentListe);
                 break;
         }
-    }
-
-    @Override
-    public void onControllerResponse(Document response) {
-        // check response type
-       /* if (response != null) {
-            Element rootResp = response.getRootElement();
-            String responseType = rootResp.getChild("response_type").getTextNormalize().toUpperCase();
-            Log.i(TAG, "Server response: " + responseType);
-            switch (responseType) {
-                case "RESP_SUPERVISION_STATE":
-                    // get supervision data
-                    Element supervisionState = rootResp.getChild("supervision_state");
-                    int containerVal = Integer.parseInt(supervisionState.getChild("date_state").getValue());
-                    // update TextView
-                    TextView tv = (TextView) findViewById(R.id.test_text);
-                    tv.setText(containerVal+"%");
-                    // update ProgressBar
-                    ProgressBar tauxContainer = (ProgressBar) findViewById(R.id.vertical_progressbar);
-                    tauxContainer.setProgress(containerVal);
-                    break;
-            }
-        }*/
     }
 }

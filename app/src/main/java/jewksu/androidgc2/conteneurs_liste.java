@@ -1,6 +1,7 @@
 package jewksu.androidgc2;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jdom2.Content;
 import org.jdom2.Document;
@@ -34,7 +36,8 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
     private static final String TAG = "Conteneurs_Liste";
     ControllerCommunication controllerComm;
     ContainerAdapter adapter;
-    ArrayList<ContainerModel> containers;
+    ArrayList<ContainerModel> containers_List;
+    final String CONTAINER_ID = "ContainerID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,21 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
 
         controllerComm = new ControllerCommunication(server_host, server_port, this);
         controllerComm.simpleRequest("REQ_SUPERVISION_STATE");
+    }
+
+    @Override
+    protected  void onListItemClick(ListView l, View v, int position, long id) {
+        Context context = getApplicationContext();
+        CharSequence text = "Chargement du conteneur numéro " + String.valueOf(containers_List.get(position).Id);
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+        Intent intentUnitaire = new Intent(conteneurs_liste.this, TestActivity.class);
+        EditText containerIDtxt = (EditText)findViewById(R.id.containerIDtxt);
+        intentUnitaire.putExtra(CONTAINER_ID, String.valueOf(containers_List.get(position).Id));
+        startActivity(intentUnitaire);
     }
 
 
@@ -100,7 +118,7 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
 
                     Element Ilots = supervisionState.getChild("container_sets");
                     List<Content> IlotsContent = Ilots.getContent();
-                    containers = new ArrayList<ContainerModel>();
+                    containers_List = new ArrayList<ContainerModel>();
                     for(int i = 0; i < IlotsContent.size(); i++)
                     {
                         List<Content> containersXMLObjects = ((Element)IlotsContent.get(i)).getChild("containers").getContent();
@@ -115,13 +133,12 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
                             containerToAdd.SetToBeCollected(Boolean.parseBoolean(((Element)containersXMLObjects.get(j)).getChild("to_be_collected").getValue()));
 
                             //containers.add((Element)containersXMLObjects.get(j));
-                            containers.add(containerToAdd);
+                            containers_List.add(containerToAdd);
                         }
                     }
-                    adapter = new ContainerAdapter(this,containers);
-                    ListView listview = (ListView)findViewById(android.R.id.list);
-                    listview.setAdapter(adapter);
-                    //setListAdapter(adapter);
+
+                    adapter = new ContainerAdapter(this, R.layout.item_container, containers_List);
+                    setListAdapter(adapter);
                     break;
             }
         }
