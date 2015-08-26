@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.jdom2.Content;
@@ -33,6 +34,9 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
     private static final String TAG = "TestActivity";
     ControllerCommunication controllerComm;
     String containerID = "-1";
+    SeekBar remplissageSlider;
+    ProgressBar tauxContainer;
+    TextView tauxText;
 
 
     @Override
@@ -49,8 +53,31 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
         if (intent != null){
             containerID = intent.getStringExtra("ContainerID");
             conteneurNumber.setText(intent.getStringExtra("ContainerID"));
-
         }
+
+        //ProgressBar qui représenter le remplissage dans le conteneur
+        tauxContainer = (ProgressBar) findViewById(R.id.vertical_progressbar);
+        tauxText = (TextView) findViewById(R.id.test_text);
+
+        //On récupère le slider de remplissage pour y ajouter un évenement ProgressChanged
+        remplissageSlider = (SeekBar)findViewById(R.id.SliderRemplissage);
+        remplissageSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                tauxContainer.setProgress(remplissageSlider.getProgress());
+                tauxText.setText(String.valueOf(remplissageSlider.getProgress())+"%");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
@@ -97,7 +124,7 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                 return true;
 
             case R.id.action_refresh:
-         //       updateSupervisionState();
+                updateSupervisionState(containerID);
                 return true;
         }
 
@@ -112,12 +139,11 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
 
     protected void sendContainerStateToController()
     {
-        // build full request
-        Element rootReq = new Element("monID");
+        Element rootReq = new Element("request");
+        Document request = new Document(rootReq);
         Element eltReqType = new Element("request_type");
         eltReqType.setText("CONTAINER_REPORT");
         rootReq.addContent(eltReqType);
-        Document request = new Document(rootReq);
         controllerComm.complexRequest(request);
     }
 
@@ -143,29 +169,27 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                        for(int j =0; j < containersXMLObjects.size(); j++)
                        {
                            ContainerModel containerToAdd = new ContainerModel();
-                           containerToAdd.SetId(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("id").getValue()));
-                           containerToAdd.SetPoids(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("weight").getValue()));
-                           containerToAdd.SetVolume(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("volume").getValue()));
-                           containerToAdd.SetVolumeMax(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("volumemax").getValue()));
-                           containerToAdd.SetFillRatio(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("fillratio").getValue()));
-                           containerToAdd.SetToBeCollected(Boolean.parseBoolean(((Element)containersXMLObjects.get(j)).getChild("to_be_collected").getValue()));
+                           containerToAdd.SetId(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("id").getValue()));
+                           containerToAdd.SetPoids(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("weight").getValue()));
+                           containerToAdd.SetVolume(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("volume").getValue()));
+                           containerToAdd.SetVolumeMax(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("volumemax").getValue()));
+                           containerToAdd.SetFillRatio(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("fillratio").getValue()));
+                           containerToAdd.SetToBeCollected(Boolean.parseBoolean(((Element) containersXMLObjects.get(j)).getChild("to_be_collected").getValue()));
 
                            //containers.add((Element)containersXMLObjects.get(j));
                            containers.add(containerToAdd);
                        }
                     }
 
-
-
-
                     // update ProgressBar
-                    ProgressBar tauxContainer = (ProgressBar) findViewById(R.id.vertical_progressbar);
                     int tauxContainerSelected = containers.get(Integer.parseInt(containerID)).FillRatio;
                     tauxContainer.setProgress(tauxContainerSelected);
 
                     // update TextView
-                    TextView tv = (TextView) findViewById(R.id.test_text);
-                    tv.setText(tauxContainerSelected+"%");
+                    tauxText.setText(tauxContainerSelected+"%");
+
+                    //update slider
+                    remplissageSlider.setProgress(tauxContainerSelected);
                     break;
             }
         }
@@ -174,15 +198,19 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
     public void buttonOnClick(View v){
         Button button = (Button)v;
         switch(button.getText().toString()) {
-            case "GET":
+            case "RAFRAICHIR":
                 updateSupervisionState(containerID);
                 break;
-            case "SET":
+            case "SAUVER":
                 sendContainerStateToController();
                 break;
-            case "Retour":
+            case "ACCUEIL":
                 Intent intent = new Intent(TestActivity.this, portail_simulation.class);
                 startActivity(intent);
+                break;
+            case "LISTE":
+                Intent intentList = new Intent(TestActivity.this, conteneurs_liste.class);
+                startActivity(intentList);
                 break;
         }
 

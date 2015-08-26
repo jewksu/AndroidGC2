@@ -53,9 +53,9 @@ public class ContainerAdapter extends ArrayAdapter<ContainerModel> {
         }
 
         if (position % 2 == 1) {
-            v.setBackgroundColor(Color.WHITE);
+            v.setBackgroundColor(Color.LTGRAY);
         } else {
-            v.setBackgroundColor(Color.argb(255,248,255,23));
+            v.setBackgroundColor(Color.argb(200,248,255,23));
         }
 
 return v;

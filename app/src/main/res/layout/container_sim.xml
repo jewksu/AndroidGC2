@@ -14,6 +14,7 @@
     <ImageView
         android:layout_width="200dp"
         android:layout_height="330dp"
+        android:layout_marginTop="40dp"
         android:id="@+id/imageView"
         android:src="@drawable/poubelle"
         android:layout_alignParentTop="true"
@@ -35,7 +36,7 @@
         android:layout_gravity="left|center_vertical"
         android:layout_row="0"
         android:layout_column="0"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="130dp"
         android:layout_marginLeft="46dp" />
 
     <LinearLayout
@@ -81,7 +82,7 @@
         <Button
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="GET"
+            android:text="RAFRAICHIR"
             android:id="@+id/buttonGET"
             android:singleLine="true"
             android:onClick="buttonOnClick" />
@@ -89,15 +90,24 @@
         <Button
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="SET"
+            android:text="SAUVER"
             android:id="@+id/buttonSET"
+            android:singleLine="true"
+            android:onClick="buttonOnClick" />
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="LISTE"
+            android:id="@+id/buttonListe"
+            android:onClick="buttonOnClick"
             android:singleLine="true" />
 
         <Button
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="Retour"
-            android:id="@+id/button"
+            android:text="ACCUEIL"
+            android:id="@+id/buttonAccueil"
             android:onClick="buttonOnClick"
             android:singleLine="true" />
 
@@ -108,6 +118,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_column="0"
+        android:layout_marginTop="30dp"
         android:layout_row="1"
         android:layout_gravity="fill_horizontal"
         android:layout_columnSpan="2">
@@ -116,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Poids"
+            android:text="Remplissage"
             android:id="@+id/textView"
             android:layout_above="@+id/seekBar"
             android:layout_alignParentLeft="true"
@@ -129,7 +140,7 @@
         <SeekBar
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
+            android:id="@+id/SliderRemplissage"
             android:progressTint="#fff8ff17"
             android:thumbTint="#FFF4FF0F"
             android:layout_below="@+id/imageView"
@@ -147,7 +158,7 @@
             android:max="100"
             android:secondaryProgress="100" />
 
-        <TextView
+     <!--    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -179,7 +190,7 @@
             android:indeterminateTint="#ffff48db"
             android:secondaryProgress="100"
             android:secondaryProgressTint="#ffabada3"
-            android:max="100" />
+            android:max="100" />-->
 
 
 

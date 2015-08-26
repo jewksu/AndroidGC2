@@ -96,9 +96,9 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
     public void buttonListeOnClick(View v){
         Button button = (Button)v;
         switch(button.getText().toString()) {
-            case "Retour":
-                Intent intentListe = new Intent(conteneurs_liste.this, portail_simulation.class);
-                startActivity(intentListe);
+            case "ACCUEIL":
+                Intent intentAccueil = new Intent(conteneurs_liste.this, portail_simulation.class);
+                startActivity(intentAccueil);
                 break;
         }
     }
