@@ -144,7 +144,24 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
         Element eltReqType = new Element("request_type");
         eltReqType.setText("CONTAINER_REPORT");
         rootReq.addContent(eltReqType);
+
+        // add container data
+        Element eltContRep = new Element("container_report");
+        addFieldInt(eltContRep, "id", 3);
+        addFieldInt(eltContRep, "weight", 0);
+        addFieldInt(eltContRep, "volume", 0);
+        addFieldInt(eltContRep, "volumemax", 200);
+        rootReq.addContent(eltContRep);
+
+
         controllerComm.complexRequest(request);
+    }
+
+    // methode helper pour ajouter un champ avec valeur entière dans un Element
+    private static void addFieldInt(Element eltRoot, String fieldname, int value) {
+        Element elt = new Element(fieldname);
+        elt.setText(String.valueOf(value));
+        eltRoot.addContent(elt);
     }
 
     @Override
