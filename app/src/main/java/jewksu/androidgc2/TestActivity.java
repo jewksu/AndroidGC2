@@ -147,10 +147,8 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
 
         // add container data
         Element eltContRep = new Element("container_report");
-        addFieldInt(eltContRep, "id", 3);
-        addFieldInt(eltContRep, "weight", 0);
-        addFieldInt(eltContRep, "volume", 0);
-        addFieldInt(eltContRep, "volumemax", 200);
+        addFieldInt(eltContRep, "id", Integer.parseInt(containerID) );
+        addFieldInt(eltContRep, "volume", tauxContainer.getProgress() );
         rootReq.addContent(eltContRep);
 
 
@@ -199,7 +197,7 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                     }
 
                     // update ProgressBar
-                    int tauxContainerSelected = containers.get(Integer.parseInt(containerID)).FillRatio;
+                    int tauxContainerSelected = containers.get(Integer.parseInt(containerID)).Volume;
                     tauxContainer.setProgress(tauxContainerSelected);
 
                     // update TextView
