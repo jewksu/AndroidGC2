@@ -1,0 +1,95 @@
+<LinearLayout android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#c73a3a3a"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="jewksu.androidgc2.portail_camions">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Garbage Collector 2.0"
+        android:id="@+id/textView3"
+        android:textSize="35dp"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="SIMULATION"
+        android:id="@+id/textView4"
+        android:textSize="30dp"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="-30dp" />
+    <TextView
+        android:layout_width="wrap_content" android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="CAMIONS"
+        android:id="@+id/textView7"
+        android:textSize="30dp"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="-40dp" />
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Trajet de quel camion ? "
+        android:id="@+id/textView5"
+        android:textSize="22dp"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="85dp" />
+
+    <Button
+        android:layout_width="250dp" android:layout_gravity="center_horizontal"
+        android:layout_height="60dp"
+        android:text="Tous les camions"
+        android:id="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="buttonPortailOnClick"
+        android:layout_marginTop="25dp"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="ou"
+        android:id="@+id/textView6"
+        android:textSize="22dp"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:layout_width="250dp" android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:id="@+id/camionIDtxt"
+        android:textStyle="normal"
+        android:background="#ffffffff"
+        android:layout_marginTop="15dp"
+        android:singleLine="true"
+        android:hint="Saisir l&apos;ID du camion"/>
+
+    <Button
+        android:layout_width="250dp" android:layout_gravity="center_horizontal"
+        android:layout_height="60dp"
+        android:text="Camion unitaire"
+        android:id="@+id/goContainer"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="buttonPortailOnClick"
+        android:layout_marginTop="5dp"
+        android:singleLine="true" />
+
+
+</LinearLayout>

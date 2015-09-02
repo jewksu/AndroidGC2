@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -21,16 +19,13 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import core.ContainerModel;
 import core.ControllerCommunication;
 
 
-public class TestActivity extends ActionBarActivity implements ControllerCommunication.ResponseListener {
+public class Container_unitaire extends ActionBarActivity implements ControllerCommunication.ResponseListener {
     private static final String TAG = "TestActivity";
     ControllerCommunication controllerComm;
     String containerID = "-1";
@@ -220,11 +215,11 @@ public class TestActivity extends ActionBarActivity implements ControllerCommuni
                 sendContainerStateToController();
                 break;
             case "ACCUEIL":
-                Intent intent = new Intent(TestActivity.this, portail_simulation.class);
+                Intent intent = new Intent(Container_unitaire.this, portail_containers.class);
                 startActivity(intent);
                 break;
             case "LISTE":
-                Intent intentList = new Intent(TestActivity.this, conteneurs_liste.class);
+                Intent intentList = new Intent(Container_unitaire.this, conteneurs_liste.class);
                 startActivity(intentList);
                 break;
         }

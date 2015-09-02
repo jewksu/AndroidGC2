@@ -4,8 +4,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,23 +22,23 @@ import org.jdom2.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.ContainerAdapter;
-import core.ContainerModel;
+import core.CamionAdapter;
+import core.CamionModel;
 import core.ControllerCommunication;
 
 
-public class conteneurs_liste extends ListActivity implements ControllerCommunication.ResponseListener {
+public class camions_liste extends ListActivity implements ControllerCommunication.ResponseListener {
 
-    private static final String TAG = "Conteneurs_Liste";
+    private static final String TAG = "Camions_Liste";
     ControllerCommunication controllerComm;
-    ContainerAdapter adapter;
-    ArrayList<ContainerModel> containers_List;
+    CamionAdapter adapter;
+    ArrayList<CamionModel> camion_List;
     final String CONTAINER_ID = "ContainerID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_conteneurs_liste);
+        setContentView(R.layout.activity_camions_liste);
 
         // get controller host and port from settings
         /* no need to provide default values, we have ensured in onCreate that preferences
@@ -48,21 +48,21 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
         int server_port = Integer.valueOf(sharedPref.getString("server_port", "0"));
 
         controllerComm = new ControllerCommunication(server_host, server_port, this);
-        controllerComm.simpleRequest("REQ_SUPERVISION_STATE");
+        controllerComm.simpleRequest("REQ_ALL_CAMIONS");
     }
 
     @Override
     protected  void onListItemClick(ListView l, View v, int position, long id) {
         Context context = getApplicationContext();
-        CharSequence text = "Chargement du conteneur numéro " + String.valueOf(containers_List.get(position).Id);
+        CharSequence text = "Chargement du conteneur numéro " + String.valueOf(camion_List.get(position).Id);
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
-        Intent intentUnitaire = new Intent(conteneurs_liste.this, Container_unitaire.class);
-        EditText containerIDtxt = (EditText)findViewById(R.id.containerIDtxt);
-        intentUnitaire.putExtra(CONTAINER_ID, String.valueOf(containers_List.get(position).Id));
+        Intent intentUnitaire = new Intent(camions_liste.this, Container_unitaire.class);
+        EditText containerIDtxt = (EditText)findViewById(R.id.camionIDtxt);
+        intentUnitaire.putExtra(CONTAINER_ID, String.valueOf(camion_List.get(position).Id));
         startActivity(intentUnitaire);
     }
 
@@ -93,7 +93,7 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
         Button button = (Button)v;
         switch(button.getText().toString()) {
             case "ACCUEIL":
-                Intent intentAccueil = new Intent(conteneurs_liste.this, portail_containers.class);
+                Intent intentAccueil = new Intent(camions_liste.this, portail_camions.class);
                 startActivity(intentAccueil);
                 break;
         }
@@ -107,33 +107,29 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
             String responseType = rootResp.getChild("response_type").getTextNormalize().toUpperCase();
             Log.i(TAG, "Server response: " + responseType);
             switch (responseType) {
-                case "RESP_SUPERVISION_STATE":
+                case "REQ_ALL_CAMIONS":
                     // get supervision data
-                    Element supervisionState = rootResp.getChild("supervision_state");
-                    int containerVal = Integer.parseInt(supervisionState.getChild("date_state").getValue());
+                    Element allCamions = rootResp.getChild("all_camions");
 
-                    Element Ilots = supervisionState.getChild("container_sets");
-                    List<Content> IlotsContent = Ilots.getContent();
-                    containers_List = new ArrayList<ContainerModel>();
-                    for(int i = 0; i < IlotsContent.size(); i++)
+                    Element Camions = allCamions.getChild("camion_sets");
+                    List<Content> CamionsContent = Camions.getContent();
+                    camion_List = new ArrayList<CamionModel>();
+                    for(int i = 0; i < CamionsContent.size(); i++)
                     {
-                        List<Content> containersXMLObjects = ((Element)IlotsContent.get(i)).getChild("containers").getContent();
-                        for(int j =0; j < containersXMLObjects.size(); j++)
-                        {
-                            ContainerModel containerToAdd = new ContainerModel();
-                            containerToAdd.SetId(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("id").getValue()));
-                            containerToAdd.SetPoids(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("weight").getValue()));
-                            containerToAdd.SetVolume(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("volume").getValue()));
-                            containerToAdd.SetVolumeMax(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("volumemax").getValue()));
-                            containerToAdd.SetFillRatio(Integer.parseInt(((Element)containersXMLObjects.get(j)).getChild("fillratio").getValue()));
-                            containerToAdd.SetToBeCollected(Boolean.parseBoolean(((Element)containersXMLObjects.get(j)).getChild("to_be_collected").getValue()));
+                        //List<Content> camionsXMLObjects = ((Element)CamionsContent.get(i)).getChild("camion").getContent();
+                            CamionModel camionToAdd = new CamionModel();
+                        camionToAdd.SetId(Integer.parseInt(((Element)CamionsContent.get(i)).getChild("id").getValue()));
+                        camionToAdd.SetPoidsMAx(Integer.parseInt(((Element) CamionsContent.get(i)).getChild("poidsmax").getValue()));
+                        camionToAdd.SetVolumeMax(Integer.parseInt(((Element)CamionsContent.get(i)).getChild("volumemax").getValue()));
+                        camionToAdd.SetTypeDechetID(Integer.parseInt(((Element) CamionsContent.get(i)).getChild("typedechetsid").getValue()));
+                        camionToAdd.SetDispo(Boolean.parseBoolean(((Element) CamionsContent.get(i)).getChild("disponible").getValue()));
 
                             //containers.add((Element)containersXMLObjects.get(j));
-                            containers_List.add(containerToAdd);
-                        }
+                            camion_List.add(camionToAdd);
+
                     }
 
-                    adapter = new ContainerAdapter(this, R.layout.container_listitem, containers_List);
+                    adapter = new CamionAdapter(this, R.layout.camion_listitem, camion_List);
                     setListAdapter(adapter);
                     break;
             }

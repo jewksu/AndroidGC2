@@ -1,39 +1,29 @@
 package jewksu.androidgc2;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import org.jdom2.Document;
-import org.jdom2.Element;
-
-import core.ControllerCommunication;
 
 
-public class portail_simulation extends ActionBarActivity  {
+public class portail_camions extends ActionBarActivity  {
 
     private static final String TAG = "Portail_Simulation";
-    final String CONTAINER_ID = "ContainerID";
+    final String CAMION_ID = "CamionID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_portail_simulation);
+        setContentView(R.layout.activity_portail_camion);
         final Button UnitaryContainer = (Button)findViewById(R.id.goContainer);
         UnitaryContainer.setEnabled(false);
-        final EditText editIdTxt = (EditText)findViewById(R.id.containerIDtxt);
+        final EditText editIdTxt = (EditText)findViewById(R.id.camionIDtxt);
         editIdTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
@@ -80,14 +70,14 @@ public class portail_simulation extends ActionBarActivity  {
     public void buttonPortailOnClick(View v){
         Button button = (Button)v;
         switch(button.getText().toString()) {
-            case "Conteneur unitaire":
-                Intent intentUnitaire = new Intent(portail_simulation.this, TestActivity.class);
+            case "Camion unitaire":
+                Intent intentUnitaire = new Intent(portail_camions.this, Container_unitaire.class);
                 EditText containerIDtxt = (EditText)findViewById(R.id.containerIDtxt);
-                intentUnitaire.putExtra(CONTAINER_ID, containerIDtxt.getText().toString());
+                intentUnitaire.putExtra(CAMION_ID, containerIDtxt.getText().toString());
                 startActivity(intentUnitaire);
                 break;
-            case "Tous les conteneurs":
-                Intent intentListe = new Intent(portail_simulation.this, conteneurs_liste.class);
+            case "Tous les camions":
+                Intent intentListe = new Intent(portail_camions.this, camions_liste.class);
                 startActivity(intentListe);
                 break;
         }

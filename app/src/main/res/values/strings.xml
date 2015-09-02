@@ -12,8 +12,9 @@
     <string name="action_dechet1">Déchet tout-venant</string>
     <string name="action_dechet2">Déchet recyclable</string>
     <string name="action_dechet3">Déchet verre</string>
-    <string name="title_activity_portail_simulation">portail_simulation</string>
+    <string name="title_activity_portail_container">portail_container</string>
+    <string name="title_activity_portail_camion">portail_camion</string>
     <string name="title_activity_conteneur_liste">conteneur_liste</string>
-    <string name="title_activity_conteneurs_liste">conteneurs_liste</string>
+    <string name="title_activity_camions_liste">camions_liste</string>
 
 </resources>

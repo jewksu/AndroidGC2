@@ -36,7 +36,7 @@ public class ContainerAdapter extends ArrayAdapter<ContainerModel> {
         // Check if an existing view is being reused, otherwise inflate the view
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.item_container,null);
+            v = inflater.inflate(R.layout.container_listitem,null);
         }
 
         ContainerModel i = objects.get(position);
