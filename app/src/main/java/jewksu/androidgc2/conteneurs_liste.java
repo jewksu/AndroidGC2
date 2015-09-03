@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -60,17 +59,16 @@ public class conteneurs_liste extends ListActivity implements ControllerCommunic
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
-        Intent intentUnitaire = new Intent(conteneurs_liste.this, Container_unitaire.class);
-        EditText containerIDtxt = (EditText)findViewById(R.id.containerIDtxt);
-        intentUnitaire.putExtra(CONTAINER_ID, String.valueOf(containers_List.get(position).Id));
-        startActivity(intentUnitaire);
+        Intent intentUnitaireContainer = new Intent(conteneurs_liste.this, Container_unitaire.class);
+        intentUnitaireContainer.putExtra(CONTAINER_ID, String.valueOf(containers_List.get(position).Id));
+        startActivity(intentUnitaireContainer);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_conteneurs_liste, menu);
+        getMenuInflater().inflate(R.menu.menu_camions_liste, menu);
         return true;
     }
 

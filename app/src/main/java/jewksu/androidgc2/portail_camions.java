@@ -71,10 +71,10 @@ public class portail_camions extends ActionBarActivity  {
         Button button = (Button)v;
         switch(button.getText().toString()) {
             case "Camion unitaire":
-                Intent intentUnitaire = new Intent(portail_camions.this, Container_unitaire.class);
-                EditText containerIDtxt = (EditText)findViewById(R.id.containerIDtxt);
-                intentUnitaire.putExtra(CAMION_ID, containerIDtxt.getText().toString());
-                startActivity(intentUnitaire);
+                Intent intentUnitaire3 = new Intent(portail_camions.this, MapsActivity.class);
+                EditText camionIDtxt = (EditText)findViewById(R.id.camionIDtxt);
+                intentUnitaire3.putExtra(CAMION_ID, camionIDtxt.getText().toString());
+                startActivity(intentUnitaire3);
                 break;
             case "Tous les camions":
                 Intent intentListe = new Intent(portail_camions.this, camions_liste.class);

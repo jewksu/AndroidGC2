@@ -5,7 +5,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="#c73a3a3a"
-    tools:context="jewksu.androidgc2.camions_liste">
+    tools:context="jewksu.androidgc2.camions_liste"
+    android:id="@+id/list">
 
         <TextView
             android:layout_width="wrap_content"

@@ -32,6 +32,7 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
     SeekBar remplissageSlider;
     ProgressBar tauxContainer;
     TextView tauxText;
+    int tauxContainerSelected = 0;
 
 
     @Override
@@ -192,7 +193,9 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
                     }
 
                     // update ProgressBar
-                    int tauxContainerSelected = containers.get(Integer.parseInt(containerID)).Volume;
+                    if(containerID != "-1") {
+                        tauxContainerSelected = containers.get(Integer.parseInt(containerID)).Volume;
+                    }
                     tauxContainer.setProgress(tauxContainerSelected);
 
                     // update TextView

@@ -22,8 +22,9 @@ public class portail_containers extends ActionBarActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portail_container);
         final Button UnitaryContainer = (Button)findViewById(R.id.goContainer);
-        UnitaryContainer.setEnabled(false);
         final EditText editIdTxt = (EditText)findViewById(R.id.containerIDtxt);
+        UnitaryContainer.setEnabled(false);
+
         editIdTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
@@ -71,10 +72,10 @@ public class portail_containers extends ActionBarActivity  {
         Button button = (Button)v;
         switch(button.getText().toString()) {
             case "Conteneur unitaire":
-                Intent intentUnitaire = new Intent(portail_containers.this, Container_unitaire.class);
+                Intent intentUnitaire2 = new Intent(portail_containers.this, Container_unitaire.class);
                 EditText containerIDtxt = (EditText)findViewById(R.id.containerIDtxt);
-                intentUnitaire.putExtra(CONTAINER_ID, containerIDtxt.getText().toString());
-                startActivity(intentUnitaire);
+                intentUnitaire2.putExtra(CONTAINER_ID, containerIDtxt.getText().toString());
+                startActivity(intentUnitaire2);
                 break;
             case "Tous les conteneurs":
                 Intent intentListe = new Intent(portail_containers.this, conteneurs_liste.class);
