@@ -33,7 +33,7 @@ public class camions_liste extends ListActivity implements ControllerCommunicati
     ControllerCommunication controllerComm;
     CamionAdapter adapter;
     ArrayList<CamionModel> camion_List;
-    final String CONTAINER_ID = "ContainerID";
+    final String CAMION_ID = "CamionID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +54,14 @@ public class camions_liste extends ListActivity implements ControllerCommunicati
     @Override
     protected  void onListItemClick(ListView l, View v, int position, long id) {
         Context context = getApplicationContext();
-        CharSequence text = "Chargement du conteneur numéro " + String.valueOf(camion_List.get(position).Id);
+        CharSequence text = "Chargement du camion numéro " + String.valueOf(camion_List.get(position).Id);
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
-        Intent intentUnitaire = new Intent(camions_liste.this, Container_unitaire.class);
-        EditText containerIDtxt = (EditText)findViewById(R.id.camionIDtxt);
-        intentUnitaire.putExtra(CONTAINER_ID, String.valueOf(camion_List.get(position).Id));
+        Intent intentUnitaire = new Intent(camions_liste.this, MapsActivity.class);
+        intentUnitaire.putExtra(CAMION_ID, String.valueOf(camion_List.get(position).Id));
         startActivity(intentUnitaire);
     }
 
