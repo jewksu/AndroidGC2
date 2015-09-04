@@ -33,7 +33,6 @@ public class camions_liste extends ListActivity implements ControllerCommunicati
     ControllerCommunication controllerComm;
     CamionAdapter adapter;
     ArrayList<CamionModel> camion_List;
-    final String CAMION_ID = "CamionID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,7 @@ public class camions_liste extends ListActivity implements ControllerCommunicati
         toast.show();
 
         Intent intentUnitaire = new Intent(camions_liste.this, MapsActivity.class);
-        intentUnitaire.putExtra(CAMION_ID, String.valueOf(camion_List.get(position).Id));
+        intentUnitaire.putExtra(MapsActivity.CAMION_ID, String.valueOf(camion_List.get(position).Id));
         startActivity(intentUnitaire);
     }
 

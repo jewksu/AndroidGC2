@@ -15,7 +15,6 @@ import android.widget.EditText;
 public class portail_camions extends ActionBarActivity  {
 
     private static final String TAG = "Portail_Simulation";
-    final String CAMION_ID = "CamionID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class portail_camions extends ActionBarActivity  {
             case "Camion unitaire":
                 Intent intentUnitaire3 = new Intent(portail_camions.this, MapsActivity.class);
                 EditText camionIDtxt = (EditText)findViewById(R.id.camionIDtxt);
-                intentUnitaire3.putExtra(CAMION_ID, camionIDtxt.getText().toString());
+                intentUnitaire3.putExtra(MapsActivity.CAMION_ID, camionIDtxt.getText().toString());
                 startActivity(intentUnitaire3);
                 break;
             case "Tous les camions":

@@ -28,10 +28,13 @@ import java.util.List;
 import core.ControllerCommunication;
 
 public class MapsActivity extends ActionBarActivity implements ControllerCommunication.ResponseListener {
+    public static final String CAMION_ID = "CamionID";
     private static final String TAG = "MapsActivity";
 
     private ControllerCommunication controllerComm;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+
+    private String CamionId;
 
     private Document lastCircuits;
     private MenuItem[] dechetMenuItems;
@@ -44,18 +47,26 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
 
         // create default values if first execution of application
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+        // supervision mode (CamionID == null) or truck mode
+        CamionId = getIntent().getStringExtra(CAMION_ID);
+        // update title to reflect mode
+        setTitle(CamionId == null ? "Supervision" : "Camion #"+CamionId);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_maps, menu);
+        // menu in supervision mode only
+        if (CamionId == null) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_maps, menu);
 
-        // keep reference on menu items
-        dechetMenuItems = new MenuItem[3];
-        dechetMenuItems[0] = menu.findItem(R.id.action_dechet1);
-        dechetMenuItems[1] = menu.findItem(R.id.action_dechet2);
-        dechetMenuItems[2] = menu.findItem(R.id.action_dechet3);
+            // keep reference on menu items
+            dechetMenuItems = new MenuItem[3];
+            dechetMenuItems[0] = menu.findItem(R.id.action_dechet1);
+            dechetMenuItems[1] = menu.findItem(R.id.action_dechet2);
+            dechetMenuItems[2] = menu.findItem(R.id.action_dechet3);
+        }
         return true;
     }
 
@@ -71,6 +82,10 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
         int server_port = Integer.valueOf(sharedPref.getString("server_port", "0"));
 
         controllerComm = new ControllerCommunication(server_host, server_port, this);
+
+        if (CamionId != null) {
+            getCamionCircuit();
+        }
     }
 
     @Override
@@ -137,6 +152,23 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
     // request new supervision state from controller and update screen with new data
     protected void updateCircuits() {
         controllerComm.simpleRequest("REQ_CIRCUITS");
+    }
+
+    // request new supervision state from controller and update screen with new data
+    protected void getCamionCircuit() {
+        // build full request
+        Element rootReq = new Element("request");
+        Document request = new Document(rootReq);
+        Element eltReqType = new Element("request_type");
+        eltReqType.setText("REQ_CIRCUIT");
+        rootReq.addContent(eltReqType);
+        Element circuit = new Element("circuit");
+        rootReq.addContent(circuit);
+        Element index = new Element("index");
+        index.setText(CamionId);
+        circuit.addContent(index);
+
+        controllerComm.complexRequest(request);
     }
 
     @Override
@@ -213,36 +245,7 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
 
                             for (Element circuit : eltCircuits) {
                                 if (Integer.valueOf(circuit.getChild("dechet_id").getTextNormalize()) == dechet_id) {
-
-                                    LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
-
-                                    // marker depot
-                                    mMap.addMarker(new MarkerOptions()
-                                                    .position(depotLocation)
-                                                    .draggable(false));
-
-                                    // use polyline to display circuit order
-                                    PolylineOptions polylineOpt = new PolylineOptions()
-                                            .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
-
-                                    // start from depot
-                                    polylineOpt.add(depotLocation);
-
-                                    for (Element containerSet : circuit.getChild("container_sets").getChildren("container_set")) {
-                                        // add marker and update polyline for each container set
-                                        LatLng location = getLocation(containerSet.getChild("location"));
-                                        mMap.addMarker(new MarkerOptions()
-                                                        .position(location)
-                                                        .draggable(false)
-                                                        .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
-                                        );
-                                        polylineOpt.add(location);
-                                    }
-
-                                    // end at depot
-                                    polylineOpt.add(depotLocation);
-
-                                    mMap.addPolyline(polylineOpt);
+                                    dispCircuit(circuit, colorHue);
 
                                     // determine color for next circuit
                                     colorHue += colorHue_step;
@@ -254,6 +257,11 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                     }
                     break;
 
+                case "RESP_CIRCUIT":
+                    // display circuit of single Truck
+                    dispCircuit(rootResp.getChild("circuit"), BitmapDescriptorFactory.HUE_BLUE);
+                    break;
+
                 case "OK":
                 case "ERROR":
                 default:
@@ -261,6 +269,41 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                     break;
             }
         }
+    }
+
+    // display circuit with given color
+    private void dispCircuit(Element circuit, float colorHue) {
+        LatLng depotLocation = getLocation(circuit.getChild("depot_location"));
+
+        // marker depot
+        mMap.addMarker(new MarkerOptions()
+                .position(depotLocation)
+                .title("Dépôt")
+                .snippet("déchetterie")
+                .draggable(false));
+
+        // use polyline to display circuit order
+        PolylineOptions polylineOpt = new PolylineOptions()
+                .color(Color.HSVToColor(255, new float[]{colorHue, 0.75f, 1}));
+
+        // start from depot
+        polylineOpt.add(depotLocation);
+
+        for (Element containerSet : circuit.getChild("container_sets").getChildren("container_set")) {
+            // add marker and update polyline for each container set
+            LatLng location = getLocation(containerSet.getChild("location"));
+            mMap.addMarker(new MarkerOptions()
+                            .position(location)
+                            .draggable(false)
+                            .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
+            );
+            polylineOpt.add(location);
+        }
+
+        // end at depot
+        polylineOpt.add(depotLocation);
+
+        mMap.addPolyline(polylineOpt);
     }
 
     // convert a location element to LatLng
