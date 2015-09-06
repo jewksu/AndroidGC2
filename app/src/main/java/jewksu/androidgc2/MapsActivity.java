@@ -186,9 +186,21 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
                     Element supervisionState = rootResp.getChild("supervision_state");
                     for (Element containerSet: supervisionState.getChild("container_sets").getChildren("container_set")) {
                         // create a marker for each container_set, colored in red (to be collected) or green (otherwise)
+                        String address = containerSet.getChild("address").getTextNormalize();
+                        StringBuilder containers = new StringBuilder();
+                        containers.append("Conteneurs: ");
+                        boolean first = true;
+                        for (Element container: containerSet.getChild("containers").getChildren("container")) {
+                            if (!first)
+                                containers.append(", ");
+                            first = false;
+                            containers.append(container.getChild("id").getTextNormalize());
+                        }
                         mMap.addMarker(new MarkerOptions()
                                 .position(getLocation(containerSet.getChild("location")))
                                 .draggable(false)
+                                .title(address)
+                                .snippet(containers.toString())
                                 .icon(BitmapDescriptorFactory.defaultMarker(containerSet.getChild("to_be_collected").getTextNormalize().equals("false") ? BitmapDescriptorFactory.HUE_GREEN : BitmapDescriptorFactory.HUE_RED))
                         );
                     }
@@ -292,9 +304,21 @@ public class MapsActivity extends ActionBarActivity implements ControllerCommuni
         for (Element containerSet : circuit.getChild("container_sets").getChildren("container_set")) {
             // add marker and update polyline for each container set
             LatLng location = getLocation(containerSet.getChild("location"));
+            String address = containerSet.getChild("address").getTextNormalize();
+            StringBuilder containers = new StringBuilder();
+            containers.append("Conteneurs: ");
+            boolean first = true;
+            for (Element container: containerSet.getChild("containers").getChildren("container")) {
+                if (!first)
+                    containers.append(", ");
+                first = false;
+                containers.append(container.getChild("id").getTextNormalize());
+            }
             mMap.addMarker(new MarkerOptions()
                             .position(location)
                             .draggable(false)
+                            .title(address)
+                            .snippet(containers.toString())
                             .icon(BitmapDescriptorFactory.defaultMarker(colorHue))
             );
             polylineOpt.add(location);
