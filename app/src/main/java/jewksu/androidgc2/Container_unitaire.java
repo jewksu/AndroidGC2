@@ -14,14 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import core.ContainerModel;
 import core.ControllerCommunication;
 
 
@@ -33,6 +28,7 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
     ProgressBar tauxContainer;
     TextView tauxText;
     int tauxContainerSelected = 0;
+    int containerVolumeMax = 0;
 
 
     @Override
@@ -96,7 +92,7 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
 
         controllerComm = new ControllerCommunication(server_host, server_port, this);
 
-        updateSupervisionState(containerID);
+        updateContainerInfo();
     }
 
     @Override
@@ -120,17 +116,27 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
                 return true;
 
             case R.id.action_refresh:
-                updateSupervisionState(containerID);
+                updateContainerInfo();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    // request new supervision state from controller and update screen with new data
-    protected void updateSupervisionState(String containerID) {
-      //  controllerComm.simpleRequest("REQ_ALL_CONTAINERS");
-        controllerComm.simpleRequest("REQ_SUPERVISION_STATE");
+    // request container info from controller and update screen with new data
+    protected void updateContainerInfo() {
+        Element rootReq = new Element("request");
+        Document request = new Document(rootReq);
+        Element eltReqType = new Element("request_type");
+        eltReqType.setText("REQ_CONTAINER_INFO");
+        rootReq.addContent(eltReqType);
+
+        // add container data
+        Element eltContInfo = new Element("container_info");
+        addFieldInt(eltContInfo, "id", Integer.parseInt(containerID) );
+        rootReq.addContent(eltContInfo);
+
+        controllerComm.complexRequest(request);
     }
 
     protected void sendContainerStateToController()
@@ -144,9 +150,9 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
         // add container data
         Element eltContRep = new Element("container_report");
         addFieldInt(eltContRep, "id", Integer.parseInt(containerID) );
-        addFieldInt(eltContRep, "volume", tauxContainer.getProgress() );
+        addFieldInt(eltContRep, "volume", tauxContainer.getProgress()*containerVolumeMax/100 );
+        addFieldInt(eltContRep, "weight", tauxContainer.getProgress());
         rootReq.addContent(eltContRep);
-
 
         controllerComm.complexRequest(request);
     }
@@ -166,36 +172,13 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
             String responseType = rootResp.getChild("response_type").getTextNormalize().toUpperCase();
             Log.i(TAG, "Server response: " + responseType);
             switch (responseType) {
-                case "RESP_SUPERVISION_STATE":
+                case "RESP_CONTAINER_INFO":
                     // get supervision data
-                    Element supervisionState = rootResp.getChild("supervision_state");
-                   // int containerVal = Integer.parseInt(supervisionState.getChild("date_state").getValue());
+                    Element containerInfo = rootResp.getChild("container_info");
 
-                    Element Ilots = supervisionState.getChild("container_sets");
-                    List<Content> IlotsContent = Ilots.getContent();
-                    List<ContainerModel> containers = new ArrayList<ContainerModel>();
-                    for(int i = 0; i < IlotsContent.size(); i++)
-                    {
-                       List<Content> containersXMLObjects = ((Element)IlotsContent.get(i)).getChild("containers").getContent();
-                       for(int j =0; j < containersXMLObjects.size(); j++)
-                       {
-                           ContainerModel containerToAdd = new ContainerModel();
-                           containerToAdd.SetId(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("id").getValue()));
-                           containerToAdd.SetPoids(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("weight").getValue()));
-                           containerToAdd.SetVolume(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("volume").getValue()));
-                           containerToAdd.SetVolumeMax(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("volumemax").getValue()));
-                           containerToAdd.SetFillRatio(Integer.parseInt(((Element) containersXMLObjects.get(j)).getChild("fillratio").getValue()));
-                           containerToAdd.SetToBeCollected(Boolean.parseBoolean(((Element) containersXMLObjects.get(j)).getChild("to_be_collected").getValue()));
-
-                           //containers.add((Element)containersXMLObjects.get(j));
-                           containers.add(containerToAdd);
-                       }
-                    }
-
+                    containerVolumeMax = Integer.valueOf(containerInfo.getChild("volume_max").getTextNormalize());
+                    tauxContainerSelected = Integer.valueOf(containerInfo.getChild("volume").getTextNormalize())*100/containerVolumeMax;
                     // update ProgressBar
-                    if(containerID != "-1") {
-                        tauxContainerSelected = containers.get(Integer.parseInt(containerID)).Volume;
-                    }
                     tauxContainer.setProgress(tauxContainerSelected);
 
                     // update TextView
@@ -212,7 +195,7 @@ public class Container_unitaire extends ActionBarActivity implements ControllerC
         Button button = (Button)v;
         switch(button.getText().toString()) {
             case "RAFRAICHIR":
-                updateSupervisionState(containerID);
+                updateContainerInfo();
                 break;
             case "SAUVER":
                 sendContainerStateToController();
