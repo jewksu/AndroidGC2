@@ -13,7 +13,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Liste des conteneurs"
             android:id="@+id/textView3"
-            android:textSize="35dp"
+            android:textSize="30dp"
             android:textColor="#ffffffff"
             android:layout_marginTop="10dp" />
 
