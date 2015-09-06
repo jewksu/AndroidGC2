@@ -17,6 +17,7 @@ import jewksu.androidgc2.R;
  * Created by kevin on 26/08/2015.
  */
 public class CamionAdapter extends ArrayAdapter<CamionModel> {
+    static private final String dechets_name[] = {"tout_venant", "recyclable", "verre"};
 
 
     // declaring our ArrayList of items
@@ -45,20 +46,11 @@ public class CamionAdapter extends ArrayAdapter<CamionModel> {
             // Lookup view for data population
             TextView CamionLabel = (TextView) v.findViewById(R.id.CamionLabel);
             TextView CamionId = (TextView) v.findViewById(R.id.CamionId);
-            TextView CamionPoidsMax = (TextView) v.findViewById(R.id.CamionPoidsMax);
-          /*  TextView CamionVolumeMax = (TextView) v.findViewById(R.id.CamionVolumeMax);
-            TextView CamionTypeDechetID = (TextView) v.findViewById(R.id.CamionTypeDechetID);
-            TextView CamionDispo = (TextView) v.findViewById(R.id.CamionDispo);*/
+            TextView CamionDesc = (TextView) v.findViewById(R.id.CamionDesc);
 
-            if (CamionLabel !=null && CamionId != null){
-                CamionLabel.setGravity(Gravity.CENTER_VERTICAL);
-                CamionLabel.setText("Camion ");
-                CamionId.setText(""+i.Id);
-               // CamionPoidsMax.setText(""+i.PoidsMax);
-             /*   CamionVolumeMax.setText(""+i.VolumeMax);
-                CamionTypeDechetID.setText(""+i.TypeDechetID);
-                CamionDispo.setText(""+i.Disponible);*/
-            }
+            CamionLabel.setText("Camion");
+            CamionId.setText("#"+String.valueOf(i.Id));
+            CamionDesc.setText(dechets_name[i.TypeDechetID-1]);
         }
 
         if (position % 2 == 1) {
