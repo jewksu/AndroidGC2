@@ -22,55 +22,38 @@
         android:layout_width="wrap_content" android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="PORTAIL DE"
+        android:text="PORTAIL DE\nSIMULATION"
         android:id="@+id/textView4"
         android:textSize="30dp"
         android:textColor="#ffffffff"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="-30dp" />
-    <TextView
-        android:layout_width="wrap_content" android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="SIMULATION"
-        android:id="@+id/textView7"
-        android:textSize="30dp"
-        android:textColor="#ffffffff"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="-40dp" />
+        android:layout_margin="20dp" />
 
     <Button
-        android:layout_width="250dp" android:layout_gravity="center_horizontal"
-        android:layout_height="60dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
         android:text="CONTENEURS"
         android:id="@+id/button2"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:onClick="buttonPortailOnClick"
-        android:layout_marginTop="70dp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:layout_margin="10dp" />
 
     <Button
         android:layout_width="250dp" android:layout_gravity="center_horizontal"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:text="CAMIONS"
-        android:id="@+id/button2"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:id="@+id/button3"
         android:onClick="buttonPortailOnClick"
-        android:layout_marginTop="25dp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:layout_margin="10dp" />
 
     <Button
         android:layout_width="250dp" android:layout_gravity="center_horizontal"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:text="SUPERVISION"
         android:id="@+id/goContainer"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:onClick="buttonPortailOnClick"
-        android:layout_marginTop="25dp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:layout_margin="10dp" />
 
 
 </LinearLayout>
